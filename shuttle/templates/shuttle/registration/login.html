@@ -1,0 +1,141 @@
+{% extends 'shuttle/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Login - CGC Shuttle{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                    url('{% static "images/campus-bg-3.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+    .login-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: none;
+        overflow: hidden;
+    }
+    .form-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .social-login .btn {
+        border-radius: 50px;
+        padding: 10px;
+        font-weight: 500;
+    }
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+    }
+    .divider::before, .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .divider::before {
+        margin-right: 10px;
+    }
+    .divider::after {
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="login-hero">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card login-card">
+                    <div class="card-header bg-primary text-white py-4 form-header">
+                        <div class="text-center">
+                            <img class="rounded" src="{% static 'images/cgc-logo.png' %}" alt="CGC Logo" width="40" height="40" class="me-2">
+                            <h2 class="mb-1">Welcome Back</h2>
+                            <p class="mb-0">Login to your CGC Shuttle account</p>
+                        </div>
+                    </div>
+                    <div class="card-body p-5">                        
+
+                        <form method="post" class="mt-4">
+    {% csrf_token %}
+    
+    <!-- Error messages -->
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong> 
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            {% else %}
+                Please enter a correct username and password.
+            {% endif %}
+        </div>
+    {% endif %}
+    
+    <!-- Username field -->
+    <div class="mb-4">
+        <label for="id_username" class="form-label">Username</label>
+        <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" 
+               class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+               required id="id_username" value="{{ form.username.value|default:'' }}">
+        {% if form.username.errors %}
+            <div class="invalid-feedback">
+                {% for error in form.username.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Password field -->
+    <div class="mb-4">
+        <label for="id_password" class="form-label">Password</label>
+        <input type="password" name="password" autocomplete="current-password" 
+               class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+               required id="id_password">
+        {% if form.password.errors %}
+            <div class="invalid-feedback">
+                {% for error in form.password.errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="text-end mt-2">
+            <a href="#">Forgot password?</a>
+        </div>
+    </div>
+
+    <!-- Remember me checkbox -->
+    <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember">
+        <label class="form-check-label" for="rememberMe">
+            Remember me
+        </label>
+    </div>
+
+    <!-- Submit button -->
+    <div class="d-grid gap-2 mt-4">
+        <button type="submit" class="btn btn-primary btn-lg py-3">
+            <i class="fas fa-sign-in-alt me-2"></i> Login
+        </button>
+        <p class="text-center mt-3">
+            Don't have an account? <a href="{% url 'register' %}">Register here</a>
+        </p>
+    </div>
+</form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

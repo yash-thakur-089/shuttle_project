@@ -1,0 +1,205 @@
+{% extends 'shuttle/base.html' %}
+{% load static %}
+
+{% block title %}Home - CGC Shuttle System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                    url('{% static "images/campus-bg.png" %}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: white;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 d-flex align-items-center">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">Seamless Campus Transportation</h1>
+                <p class="lead mb-4 animate__animated animate__fadeIn animate__delay-1s">
+                    Book your shuttle rides with ease and enjoy comfortable transportation across CGC campus.
+                </p>
+                <div class="d-flex gap-3 animate__animated animate__fadeIn animate__delay-2s">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-user-plus me-2"></i> Get Started
+                    </a>
+                    <a href="#" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-play me-2"></i> Watch Video
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block animate__animated animate__fadeInRight">
+                <img src="{% static 'images/shuttle-illustration.png' %}" class="img-fluid" alt="Shuttle Illustration">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold display-5 mb-3">Why Choose CGC Shuttle?</h2>
+            <p class="lead text-muted">Experience the best campus transportation service</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-primary bg-opacity-10 text-primary mb-4 mx-auto">
+                            <i class="fas fa-bolt fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Quick Booking</h4>
+                        <p class="text-muted">Book your shuttle in just a few taps from anywhere on campus.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-success bg-opacity-10 text-success mb-4 mx-auto">
+                            <i class="fas fa-wallet fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Digital Wallet</h4>
+                        <p class="text-muted">Cashless payments with our secure digital wallet system.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-box bg-info bg-opacity-10 text-info mb-4 mx-auto">
+                            <i class="fas fa-map-marked-alt fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Smart Routes</h4>
+                        <p class="text-muted">Optimized routes to get you to your destination faster.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="d-flex justify-content-center col-lg-6 mb-4 mb-lg-0">
+                <img src="{% static 'images/app-screenshot.png' %}" class="img-fluid rounded " alt="App Screenshot">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="fw-bold display-5 mb-4">How It Works</h2>
+                <div class="d-flex mb-4">
+                    <div class="me-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                            1
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">Create Your Account</h4>
+                        <p class="text-muted mb-0">Register with your CGC email and set up your profile.</p>
+                    </div>
+                </div>
+                <div class="d-flex mb-4">
+                    <div class="me-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                            2
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">Load Your Wallet</h4>
+                        <p class="text-muted mb-0">Add credits to your digital wallet through various payment methods.</p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="me-4">
+                        <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center">
+                            3
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">Book & Ride</h4>
+                        <p class="text-muted mb-0">Select your destination, book a shuttle, and enjoy the ride!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold display-5 mb-3">What Students Say</h2>
+            <p class="lead text-muted">Hear from our satisfied users</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-1">Priya Sharma</h5>
+                                <p class="text-muted small mb-0">Computer Science, 3rd Year</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"The shuttle system has made my campus life so much easier. I can get to my classes on time without worrying about transportation."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-1">Rahul Verma</h5>
+                                <p class="text-muted small mb-0">Mechanical Engineering, 2nd Year</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"The digital wallet feature is fantastic! No more carrying cash for shuttle fares. The app is very user-friendly too."</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" class="rounded-circle me-3" width="60" height="60">
+                            <div>
+                                <h5 class="mb-1">Neha Patel</h5>
+                                <p class="text-muted small mb-0">Business Administration, 4th Year</p>
+                            </div>
+                        </div>
+                        <p class="mb-0">"As someone who's always running late, the real-time tracking feature has been a lifesaver. I know exactly when the shuttle will arrive!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container py-5 text-center">
+        <h2 class="fw-bold display-5 mb-4">Ready to Experience Better Campus Transportation?</h2>
+        <p class="lead mb-5">Join thousands of CGC students who are already enjoying hassle-free shuttle services.</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 py-3 fw-bold">
+            <i class="fas fa-user-plus me-2"></i> Register Now
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'shuttle/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Student Registration{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                    url('{% static "images/campus-bg-2.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+    .registration-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: none;
+    }
+    .form-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+    .step-indicator {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+    .step {
+        text-align: center;
+        position: relative;
+        flex: 1;
+    }
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background-color: #e9ecef;
+        color: #6c757d;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+    }
+    .step.active .step-number {
+        background-color: #4e73df;
+        color: white;
+    }
+    .step.completed .step-number {
+        background-color: #1cc88a;
+        color: white;
+    }
+    .step-title {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+    .step.active .step-title {
+        color: #4e73df;
+        font-weight: bold;
+    }
+    .step.completed .step-title {
+        color: #1cc88a;
+    }
+    .step-connector {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        right: -50%;
+        height: 2px;
+        background-color: #e9ecef;
+        z-index: -1;
+    }
+    .step.completed .step-connector {
+        background-color: #1cc88a;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="registration-hero">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card registration-card">
+                    <div class="card-header bg-primary text-white py-4 form-header">
+                        <div class="text-center">
+                            <img class="rounded" src="{% static 'images/cgc-logo.png' %}" alt="CGC Logo" width="60" class="mb-3">
+                            <h2 class="mb-1">Student Registration</h2>
+                            <p class="mb-0">Create your CGC Shuttle System account</p>
+                        </div>
+                    </div>
+                    <div class="card-body p-5">
+                        <!-- Registration Progress -->
+                        
+
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+                            <h5 class="mb-4 text-primary"><i class="fas fa-user-circle me-2"></i> Personal Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    {{ form.username|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.email|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.first_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.last_name|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.university_id|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.phone|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <h5 class="mb-4 mt-5 text-primary"><i class="fas fa-lock me-2"></i> Security</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    {{ form.password1|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.password2|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <h5 class="mb-4 mt-5 text-primary"><i class="fas fa-graduation-cap me-2"></i> Academic Information</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    {{ form.department|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.semester|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="form-check mt-4 mb-4">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                                </label>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg py-3">
+                                    <i class="fas fa-user-plus me-2"></i> Complete Registration
+                                </button>
+                                <p class="text-center mt-3">
+                                    Already have an account? <a href="{% url 'login' %}">Login here</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

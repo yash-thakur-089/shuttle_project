@@ -1,0 +1,191 @@
+{% extends 'shuttle/base.html' %}
+{% load static %}
+{% load django_tables2 %}
+
+{% block title %}Transaction History{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filter-card {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    .transaction-card {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    .transaction-item {
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+    .transaction-item:hover {
+        background-color: #f8f9fa;
+    }
+    .transaction-item.credit {
+        border-left-color: #1cc88a;
+    }
+    .transaction-item.debit {
+        border-left-color: #e74a3b;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+    .pagination .page-link {
+        color: #4e73df;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-exchange-alt me-2"></i> Transaction History</h1>
+        <div>
+            <a href="{% url 'wallet' %}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left me-1"></i> Back to Wallet
+            </a>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+                <i class="fas fa-file-export me-1"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card filter-card mb-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Transaction Type</label>
+                            <select name="type" class="form-select">
+                                <option value="">All Transactions</option>
+                                <option value="CREDIT" {% if request.GET.type == 'CREDIT' %}selected{% endif %}>Credits</option>
+                                <option value="DEBIT" {% if request.GET.type == 'DEBIT' %}selected{% endif %}>Debits</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Date From</label>
+                            <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Date To</label>
+                            <input type="date" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card transaction-card">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">All Transactions</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-sort me-1"></i> Sort By
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="?sort=date_desc">Newest First</a></li>
+                            <li><a class="dropdown-item" href="?sort=date_asc">Oldest First</a></li>
+                            <li><a class="dropdown-item" href="?sort=amount_desc">Highest Amount</a></li>
+                            <li><a class="dropdown-item" href="?sort=amount_asc">Lowest Amount</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if table.rows %}
+                        {% render_table table %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <img src="{% static 'images/no-transactions.svg' %}" class="img-fluid mb-4" width="150" alt="No transactions">
+                            <h5 class="mb-2">No Transactions Found</h5>
+                            <p class="text-muted">Your transaction history will appear here</p>
+                            <a href="{% url 'wallet' %}" class="btn btn-primary mt-3">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Wallet
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-file-export me-2"></i> Export Transactions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'export_transactions' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="{{ request.GET.type }}">
+                    <input type="hidden" name="date_from" value="{{ request.GET.date_from }}">
+                    <input type="hidden" name="date_to" value="{{ request.GET.date_to }}">
+                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Export Format</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="format" id="formatPDF" value="pdf" checked>
+                                <label class="btn btn-outline-primary w-100 py-3" for="formatPDF">
+                                    <i class="fas fa-file-pdf me-2"></i> PDF
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="format" id="formatCSV" value="csv">
+                                <label class="btn btn-outline-primary w-100 py-3" for="formatCSV">
+                                    <i class="fas fa-file-csv me-2"></i> CSV
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="format" id="formatExcel" value="excel">
+                                <label class="btn btn-outline-primary w-100 py-3" for="formatExcel">
+                                    <i class="fas fa-file-excel me-2"></i> Excel
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" class="btn-check" name="format" id="formatPrint" value="print">
+                                <label class="btn btn-outline-primary w-100 py-3" for="formatPrint">
+                                    <i class="fas fa-print me-2"></i> Print
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Date Range</label>
+                        <select class="form-select" name="export_range">
+                            <option value="filtered">Current Filtered Results</option>
+                            <option value="all">All Transactions</option>
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                            <option value="this_year">This Year</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" form="exportForm">
+                    <i class="fas fa-download me-1"></i> Export
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

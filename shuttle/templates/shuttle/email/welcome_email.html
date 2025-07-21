@@ -1,0 +1,82 @@
+{% extends 'shuttle/email/base_email.html' %}
+{% load static %}
+
+{% block content %}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding: 40px 0 30px 0;">
+            <img src="{% static 'images/cgc-logo.png' %}" alt="CGC Logo" width="80" style="display: block;" />
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 20px 0; color: #153643; font-family: 'Poppins', Arial, sans-serif; font-size: 24px; font-weight: bold;">
+            <h2 style="margin: 0;">Welcome to CGC Shuttle System!</h2>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 30px 0; color: #153643; font-family: 'Poppins', Arial, sans-serif; font-size: 16px; line-height: 24px;">
+            <p style="margin: 0;">Dear {{ user.get_full_name }},</p>
+            <p style="margin: 15px 0 0 0;">Thank you for registering with the CGC Shuttle Management System.</p>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 30px 0;">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" style="border-radius: 8px;" bgcolor="#4e73df">
+                        <a href="{{ login_url }}" target="_blank" style="font-size: 16px; font-family: 'Poppins', Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 8px; padding: 12px 25px; border: 1px solid #4e73df; display: inline-block; font-weight: 500;">Login to Your Account</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 30px 0; color: #153643; font-family: 'Poppins', Arial, sans-serif; font-size: 16px; line-height: 24px;">
+            <p style="margin: 0;">Here are your account details:</p>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 40px 0;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center">
+                        <table border="0" cellspacing="0" cellpadding="0" width="400" style="border-collapse: collapse;">
+                            <tr>
+                                <td style="border: 1px solid #dddddd; padding: 15px; text-align: left; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; color: #555555;">
+                                    <strong>Username:</strong> {{ user.username }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #dddddd; border-top: none; padding: 15px; text-align: left; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; color: #555555;">
+                                    <strong>University ID:</strong> {{ user.university_id }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #dddddd; border-top: none; padding: 15px; text-align: left; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; color: #555555;">
+                                    <strong>Department:</strong> {{ user.studentprofile.department }}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 30px 0; color: #153643; font-family: 'Poppins', Arial, sans-serif; font-size: 16px; line-height: 24px;">
+            <p style="margin: 0;">You can now book shuttles, manage your wallet, and track your rides.</p>
+            <p style="margin: 15px 0 0 0;">Your initial wallet balance is <strong>$0.00</strong>. An admin will assign your travel credits soon.</p>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 20px 0; color: #153643; font-family: 'Poppins', Arial, sans-serif; font-size: 16px; line-height: 24px;">
+            <p style="margin: 0;">If you have any questions, please contact our support team.</p>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding: 0 0 40px 0; font-family: 'Poppins', Arial, sans-serif; font-size: 14px; line-height: 24px; color: #999999;">
+            <p style="margin: 0;">© {% now "Y" %} CGC Shuttle System. All rights reserved.</p>
+        </td>
+    </tr>
+</table>
+{% endblock %}

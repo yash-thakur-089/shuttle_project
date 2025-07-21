@@ -1,0 +1,408 @@
+{% extends 'shuttle/base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .recent-activity-item {
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+    .recent-activity-item:hover {
+        background-color: #f8f9fa;
+        border-left-color: #4e73df;
+    }
+    .chart-container {
+        height: 300px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><i class="fas fa-tachometer-alt me-2"></i> Admin Dashboard</h1>
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dashboardMenu" data-bs-toggle="dropdown">
+                <i class="fas fa-calendar me-1"></i> 
+                <span id="report-range">Today</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#" data-range="today">Today</a></li>
+                <li><a class="dropdown-item" href="#" data-range="yesterday">Yesterday</a></li>
+                <li><a class="dropdown-item" href="#" data-range="last7">Last 7 Days</a></li>
+                <li><a class="dropdown-item" href="#" data-range="last30">Last 30 Days</a></li>
+                <li><a class="dropdown-item" href="#" data-range="thismonth">This Month</a></li>
+                <li><a class="dropdown-item" href="#" data-range="lastmonth">Last Month</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-left-primary shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total Students</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_students }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="stat-icon bg-primary bg-opacity-10 text-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-left-success shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Credits Assigned</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">${{ total_credits_assigned }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="stat-icon bg-success bg-opacity-10 text-success">
+                                <i class="fas fa-coins"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-left-info shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Active Bookings</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">24</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="stat-icon bg-info bg-opacity-10 text-info">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stat-card border-left-warning shadow-sm h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col me-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Requests</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">5</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="stat-icon bg-warning bg-opacity-10 text-warning">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Credits Assignment Overview</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" href="#">Export Data</a></li>
+                            <li><a class="dropdown-item" href="#">Print</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Refresh</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="creditsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Departments Distribution</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" href="#">Export Data</a></li>
+                            <li><a class="dropdown-item" href="#">Print</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Refresh</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="departmentChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="me-2">
+                            <i class="fas fa-circle text-primary"></i> Computer Science
+                        </span>
+                        <span class="me-2">
+                            <i class="fas fa-circle text-success"></i> Mechanical
+                        </span>
+                        <span class="me-2">
+                            <i class="fas fa-circle text-info"></i> Electrical
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Credit Assignments</h6>
+                    <a href="{% url 'assign_credits' %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus me-1"></i> New Assignment
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for assignment in recent_assignments %}
+                        <div class="list-group-item recent-activity-item py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="icon-circle bg-primary">
+                                        <i class="fas fa-coins text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="small text-gray-500">{{ assignment.timestamp|date:"M d, Y H:i" }}</div>
+                                    <span class="fw-bold">${{ assignment.amount }}</span> credited to 
+                                    <a href="#">{{ assignment.student.username }}</a>
+                                    <div class="small text-muted">{{ assignment.reason }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <a href="#" class="btn btn-block btn-light mt-3">View All Assignments</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="#" class="card h-100 border-0 shadow-sm text-decoration-none">
+                                <div class="card-body text-center py-4">
+                                    <div class="icon-circle bg-primary mb-3 mx-auto">
+                                        <i class="fas fa-user-plus text-white"></i>
+                                    </div>
+                                    <h5 class="mb-1">Add Student</h5>
+                                    <p class="small text-muted mb-0">Create new student account</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="card h-100 border-0 shadow-sm text-decoration-none">
+                                <div class="card-body text-center py-4">
+                                    <div class="icon-circle bg-success mb-3 mx-auto">
+                                        <i class="fas fa-file-export text-white"></i>
+                                    </div>
+                                    <h5 class="mb-1">Generate Report</h5>
+                                    <p class="small text-muted mb-0">Export system data</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="card h-100 border-0 shadow-sm text-decoration-none">
+                                <div class="card-body text-center py-4">
+                                    <div class="icon-circle bg-info mb-3 mx-auto">
+                                        <i class="fas fa-route text-white"></i>
+                                    </div>
+                                    <h5 class="mb-1">Manage Routes</h5>
+                                    <p class="small text-muted mb-0">Edit shuttle routes</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" class="card h-100 border-0 shadow-sm text-decoration-none">
+                                <div class="card-body text-center py-4">
+                                    <div class="icon-circle bg-warning mb-3 mx-auto">
+                                        <i class="fas fa-cog text-white"></i>
+                                    </div>
+                                    <h5 class="mb-1">System Settings</h5>
+                                    <p class="small text-muted mb-0">Configure application</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Credits Chart
+    const creditsCtx = document.getElementById('creditsChart').getContext('2d');
+    const creditsChart = new Chart(creditsCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Credits Assigned',
+                data: [5000, 6200, 4500, 5800, 7200, 6500],
+                backgroundColor: 'rgba(78, 115, 223, 0.05)',
+                borderColor: 'rgba(78, 115, 223, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+                pointBorderColor: '#fff',
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
+                pointHoverBorderColor: '#fff',
+                pointHitRadius: 10,
+                pointBorderWidth: 2,
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Department Chart
+    const deptCtx = document.getElementById('departmentChart').getContext('2d');
+    const deptChart = new Chart(deptCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Computer Science', 'Mechanical', 'Electrical', 'Civil', 'Business'],
+            datasets: [{
+                data: [35, 25, 20, 10, 10],
+                backgroundColor: [
+                    'rgba(78, 115, 223, 0.8)',
+                    'rgba(28, 200, 138, 0.8)',
+                    'rgba(54, 185, 204, 0.8)',
+                    'rgba(246, 194, 62, 0.8)',
+                    'rgba(231, 74, 59, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(78, 115, 223, 1)',
+                    'rgba(28, 200, 138, 1)',
+                    'rgba(54, 185, 204, 1)',
+                    'rgba(246, 194, 62, 1)',
+                    'rgba(231, 74, 59, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+
+    // Date range selector
+    document.querySelectorAll('.dropdown-item[data-range]').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            const range = this.getAttribute('data-range');
+            let text = '';
+            
+            switch(range) {
+                case 'today': text = 'Today'; break;
+                case 'yesterday': text = 'Yesterday'; break;
+                case 'last7': text = 'Last 7 Days'; break;
+                case 'last30': text = 'Last 30 Days'; break;
+                case 'thismonth': text = 'This Month'; break;
+                case 'lastmonth': text = 'Last Month'; break;
+            }
+            
+            document.getElementById('report-range').textContent = text;
+        });
+    });
+</script>
+{% endblock %}
